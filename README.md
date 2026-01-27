@@ -34,11 +34,11 @@ We provide results in BED9, which makes the track easy to visualize in genome br
 | `chromStart` | Window start                                                                            |
 | `chromEnd`   | Window end                                                                              |
 | `name`       | Sample/haplotype/window identifier **+ predicted coordinate** (e.g., `(PC1,PC2)`)       |
-| `score`      | Uncertainty score (e.g., MC uncertainty)                                                |
-| `strand`     | `+`, `-`, or `.`                                                                        |
-| `thickStart` | Usually equals `chromStart`                                                             |
-| `thickEnd`   | Usually equals `chromEnd`                                                               |
-| `itemRgb`    | RGB color derived from the predicted coordinate (depends on your PCA/space constructor) |
+| `score`      | Confidence score  (0 min, 1000 max)                                               |
+| `strand`     | `.`                                                                        |
+| `thickStart` | Equals `chromStart`                                                             |
+| `thickEnd`   | Equals `chromEnd`                                                               |
+| `itemRgb`    | RGB color derived from the predicted coordinate (based on the 1000 Genomes PCA) |
 
 Example row (illustrative):
 ```
