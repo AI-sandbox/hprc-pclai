@@ -25,14 +25,14 @@ PCLAI is naturally a regression method in a coordinate space. For HPRC Release 2
 
 ## How HPRC Release 2 results were generated (high level)
 
-1. **Reference embedding:** Construct a reference PCA embedding (from 1000 Genomes using the [Reference PCA Metadata](https://github.com/AI-sandbox/hprc-pclai/reference_pca_metadata.tsv)).
+1. **Reference embedding:** Construct a reference PCA embedding (from 1000 Genomes using the [Reference PCA Metadata](https://github.com/AI-sandbox/hprc-pclai/blob/main/reference_pca_metadata.tsv)).
 2. **Windows:** Split each haplotype into fixed windows of 1000 SNPs.
 3. **Inference:** Predict a coordinate for each window in the reference PCA space.
 4. **Confidence:** Output a confidence score per window for QC / filtering.
 
-Discrete ancestry labeling is **optional**: you can bin coordinates into categories after the fact, but the primary output is continuous. If you require PCLAI discretization for downstream tasks, consult our [Manual](https://github.com/AI-sandbox/hprc-pclai/pclai_manual.pdf). 
+Discrete ancestry labeling is **optional**: you can bin coordinates into categories after the fact, but the primary output is continuous. If you require PCLAI discretization for downstream tasks, consult our [Manual](https://github.com/AI-sandbox/hprc-pclai/blob/main/pclai_manual.pdf). 
 
-If you require impainting missing windows for downstream tasks, refer to our recommendation in our [Manual](https://github.com/AI-sandbox/hprc-pclai/pclai_manual.pdf). 
+If you require impainting missing windows for downstream tasks, refer to our recommendation in our [Manual](https://github.com/AI-sandbox/hprc-pclai/blob/main/pclai_manual.pdf). 
 
 ---
 
