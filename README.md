@@ -1,61 +1,64 @@
 ![PCLAI Banner](./figures/pclai_banner.png)
 
+## Point Cloud Local Ancestry Inference (PCLAI) — HPRC Release 2
 
-*PCLAI is a deep learning-based approach for inferring continuous population genetic structure along the genome. Instead of assigning each window to a discrete ancestry label, PCLAI predicts a continuous coordinate (e.g., in PCA space) for every genomic window, plus an uncertainty score.*
+*Quick links:*
+**Read the Manual:** [PCLAI Manual v.0.1](https://github.com/AI-sandbox/hprc-pclai/pclai_manual.pdf)
+**Reference PCA space (PC1–PC2 + metadata):** [Reference PCA Metadata](https://github.com/AI-sandbox/hprc-pclai/reference_pca_metadata.tsv)
 
-------------------
-### What PCLAI does
+PCLAI is a deep learning-based approach for inferring continuous population genetic structure along the genome. Instead of assigning each genomic window to a discrete ancestry label, PCLAI predicts a **continuous coordinate** (e.g., a point in PC1–PC2 space) for every window, together with a **per-window confidence score**.
 
-PCLAI produces two core outputs per genomic window:
+---
 
-+ **Continuous coordinates per window**: a low-dimensional position (e.g., (PC1, PC2)) representing where that window lies in a reference genetic space.
-+ **Uncertainty score prediction**: a per-window confidence/uncertainty value, useful for filtering or downstream QC.
+### What PCLAI provides
 
-PCLAI can be framed as a regression problem in any vector space. For HPRC samples we use PCA as the default surrogate for genetic distance.
+For each genomic window (**1000 SNPs**), PCLAI outputs:
 
-### Method overview applied on HPRC samples
+- **Continuous coordinates per window**  
+  A low-dimensional coordinate (e.g., **(PC1, PC2)**) representing where that window lies in a reference genetic space.
 
-At a high level:
+- **Confidence score per window**  
+  A value in **[0, 1000]** where **higher = more confident**. We filter out very low-confidence predictions in the distributed BED files.
 
-1. **First, we build a reference embedding**: we construct a PCA from a reference panel (e.g., 1000 Genomes).
-2. **Next, we define genomic windows**: we split the genome into a discrete set of windows (1000 SNPs).
-3. **Then, we regress continuous coordinates**: we train the PCLAI model on 1000 Genomes and then infer the genomic windows' continuous coordinate on HPRC samples in the reference space.
-4. **Finally, we quantify uncertainty**: we produce an uncertainty score per genomic window alongside the coordinate.
+PCLAI is naturally a regression method in a coordinate space. For HPRC Release 2, coordinates are reported in **PCA space** as a default surrogate for genetic distance.
 
-The key point is that discrete annotation is optional: you can label regions after the fact, but the model is designed to represent the full continuous spectrum of ancestry variation, avoiding artificial hard binning.
+---
 
-### Output format (BED9)
+## How HPRC Release 2 results were generated (high level)
 
-We provide results in BED9, which makes the track easy to visualize in genome browsers (and supports color encoding via `itemRgb`).
+1. **Reference embedding:** Construct a reference PCA embedding (from 1000 Genomes using the [Reference PCA Metadata](https://github.com/AI-sandbox/hprc-pclai/reference_pca_metadata.tsv)).
+2. **Windows:** Split each haplotype into fixed windows of 1000 SNPs.
+3. **Inference:** Predict a coordinate for each window in the reference PCA space.
+4. **Confidence:** Output a confidence score per window for QC / filtering.
 
-| Field        | Description                                                                             |
-| ------------ | --------------------------------------------------------------------------------------- |
-| `chrom`      | Chromosome                                                                              |
-| `chromStart` | Window start                                                                            |
-| `chromEnd`   | Window end                                                                              |
-| `name`       | Sample/haplotype/window identifier **+ predicted coordinate** (e.g., `(PC1,PC2)`)       |
-| `score`      | Confidence score  (0 min, 1000 max)                                               |
-| `strand`     | `.`                                                                        |
-| `thickStart` | Equals `chromStart`                                                             |
-| `thickEnd`   | Equals `chromEnd`                                                               |
-| `itemRgb`    | RGB color derived from the predicted coordinate (based on the 1000 Genomes PCA) |
+Discrete ancestry labeling is **optional**: you can bin coordinates into categories after the fact, but the primary output is continuous. If you require PCLAI discretization for downstream tasks, consult our [Manual](https://github.com/AI-sandbox/hprc-pclai/pclai_manual.pdf). 
 
-Example row (illustrative):
-```
-chr22  49203384  49262883  NA21144/h2/w0353 (0.435,-0.711)  104  .  49203384  49262883  255,155,255
+If you require impaiting missing windows for downstream tasks, refer to our recommendation in our [Manual](https://github.com/AI-sandbox/hprc-pclai/pclai_manual.pdf). 
+
+---
+
+## Output format (BED9)
+
+We provide local ancestry results as **BED9**, which works well in genome browsers and supports interval coloring via `itemRgb`.
+
+| Field        | Description |
+| ------------ | ----------- |
+| `chrom`      | Chromosome |
+| `chromStart` | Window start (0-based, inclusive) |
+| `chromEnd`   | Window end (0-based, exclusive) |
+| `name`       | `{sample}/{hap}/{chrom}_wXXXX_(x,y)` where `(x,y)` are the predicted coordinates (e.g., `(PC1,PC2)`) |
+| `score`      | **Confidence score** in **[0,1000]** (higher = more confident) |
+| `strand`     | `.` |
+| `thickStart` | equals `chromStart` |
+| `thickEnd`   | equals `chromEnd` |
+| `itemRgb`    | `R,G,B` color derived from the predicted coordinate (exported as RGB; generated from a perceptual mapping) |
+
+Example BED9 row:
+```txt
+chr1    14486   805864  HG00097/h1/chr1_w0001_(0.438,-1.398)    991 .   14486   805864  222,162,255
 ```
 
 **Visualization tip**: `itemRgb` lets you color each window by position in the embedding (e.g., mapping a 2D coordinate into a perceptual color space → RGB), so continuous shifts along the genome are visually apparent.
-
-#### Optional: discretizing the output
-
-If you need discrete ancestry calls for a downstream tool, you can discretize PCLAI outputs after inference.
-
-One simple approach is to train a classifier on reference samples in the same space. We recommend:
-
-+ **k-NN (k = 15) decision boundaries** over the reference embedding can convert continuous coordinates into discrete bins.
-
-That said, a major motivation for PCLAI is that discrete LAI cannot become continuous, while PCLAI retains continuous structure by default, discretization is strictly optional and task-dependent.
 
 
 ## Cite
