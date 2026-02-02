@@ -3,8 +3,7 @@
 ## Point Cloud Local Ancestry Inference (PCLAI) — HPRC Release 2
 
 *Quick links:*
-**Read the Manual:** [PCLAI Manual v.0.1](https://github.com/AI-sandbox/hprc-pclai/pclai_manual.pdf)
-**Reference PCA space (PC1–PC2 + metadata):** [Reference PCA Metadata](https://github.com/AI-sandbox/hprc-pclai/reference_pca_metadata.tsv)
+**Read the Manual:** [PCLAI Manual v.0.1](https://github.com/AI-sandbox/hprc-pclai/blob/main/pclai_manual.pdf) | **Reference PCA space (PC1–PC2 + metadata):** [Reference PCA Metadata](https://github.com/AI-sandbox/hprc-pclai/blob/main/reference_pca_metadata.tsv) | **Index files**: [GRCh38 - CHM13 - Assembly](https://github.com/human-pangenomics/hprc_intermediate_assembly/tree/main/data_tables/annotation/pclai)
 
 PCLAI is a deep learning-based approach for inferring continuous population genetic structure along the genome. Instead of assigning each genomic window to a discrete ancestry label, PCLAI predicts a **continuous coordinate** (e.g., a point in PC1–PC2 space) for every window, together with a **per-window confidence score**.
 
