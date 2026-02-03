@@ -46,7 +46,7 @@ We provide local ancestry results as **BED9**, which works well in genome browse
 | `chromStart` | Window start (0-based, inclusive) |
 | `chromEnd`   | Window end (0-based, exclusive) |
 | `name`       | `{sample}/{hap}/{chrom}_wXXXX_(x,y)` where `(x,y)` are the predicted coordinates (e.g., `(PC1,PC2)`) |
-| `score`      | **Confidence score** in **[0,1000]** (higher = more confident) |
+| `score`      | Confidence score in [0,1000] (higher = more confident) |
 | `strand`     | `.` |
 | `thickStart` | equals `chromStart` |
 | `thickEnd`   | equals `chromEnd` |
